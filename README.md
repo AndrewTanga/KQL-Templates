@@ -1,5 +1,36 @@
 # KQL-Templates
 
+# Log Analytics Workspace
+
+```
+// Querying for the deletion of critical Resource Groups
+AzureActivity
+| where ResourceGroup startswith "Critical-Infrastructure-"
+| order by TimeGenerated
+
+// Querying for changes to network security groups
+AzureActivity
+| where OperationNameValue == "MICROSOFT.NETWORK/NETWORKSECURITYGROUPS/SECURITYRULES/WRITE"
+// Optionally, specific Resource Groups:
+// | where ResourceGroup in ("resource-group-1", "resource-group-2") 
+| order by TimeGenerated
+
+// Deletion activities within a certain timespan
+AzureActivity
+| where OperationNameValue endswith "DELETE"
+| where ActivityStatusValue == "Success"
+| where TimeGenerated > ago(30m)
+| order by TimeGenerated
+
+// From Microsoft Defender for Cloud Security Events
+AzureActivity
+| where CategoryValue == "Security"
+
+// Just stuff happening on the Management Plane
+AzureActivity
+| where CategoryValue != "Administrative"
+```
+
 # Windows Security Event Log
 
 ```
